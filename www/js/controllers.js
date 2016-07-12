@@ -703,6 +703,14 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
             if ($scope.act_type != 0) {
                 $ionicSlideBoxDelegate.slide(index);
             }
+        } else if (index == 3) {
+            if ($scope.act_type != 0) {
+                $ionicSlideBoxDelegate.slide(index);
+            }
+       } else if (index == 4) {
+            if ($scope.act_type != 0) {
+                $ionicSlideBoxDelegate.slide(index);
+            }
         } else {
             $ionicSlideBoxDelegate.slide(index);
         }

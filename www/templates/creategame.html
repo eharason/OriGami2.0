@@ -69,6 +69,7 @@
                     <h2 style="color:white;">New game</h2>
                     <p style="color:white;font-size:3vh;"><span>Step 2:</span> Choose Activity Type</p>
                     <div class="act_conts">
+                       
                         <div class="act">
                             <a ng-click="chooseActType(1)">
                                 <div class="act_cont" ng-class="{isChoosen: act_type == 1}">
@@ -81,6 +82,7 @@
                                 </div>
                             </a>
                         </div>
+
                         <div class="act">
                             <a ng-click="chooseActType(2)">
                                 <div class="act_cont" ng-class="{isChoosen: act_type == 2}">
@@ -88,12 +90,26 @@
                                         <div style="margin-bottom:25px;">
                                             <p>Follow Route</p>
                                         </div>
-                                        <!-- <div style = "margin-bottom:25px;"><p style="font-size:2vh;">Students will follow the route, consisting of several points</p></div> -->
                                         <div><img src="./img/icons/route.svg"></div>
                                     </div>
                                 </div>
                             </a>
                         </div>
+
+                   <div class="act">
+                            <a ng-click="chooseActType(3)">
+                                <div class="act_cont" ng-class="{isChoosen: act_type == 3}">
+                                    <div class="dest_route">
+                                        <div style="margin-bottom:25px;">
+                                            <p>Route planning</p>
+                                        </div>
+                                      <!--   <div style = "margin-bottom:25px;"><p style="font-size:2vh;">Students will follow the route, consisting of several points</p></div> -->
+                                        <div><img src="./img/icons/planRoute.svg"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
                 <!-- Navigation buttons -->
@@ -103,6 +119,7 @@
                             Continue
                         </button>
                         <a class="stop_b" ng-click="stopCreation()"><p>STOP</p></a>
+
                     </div>
                 </div>
             </div>
