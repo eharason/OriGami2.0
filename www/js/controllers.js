@@ -29,6 +29,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
     // Fetch all the games from the server
     $scope.games = [];
     API.getMetadata().success(function (metadata, status, headers, config) {
+        $scope.error_msg = null;
         $scope.games = [];
         for (var i = 0; i < metadata.length; i++) {
             $scope.games.push(metadata[i]);
@@ -37,6 +38,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
             });
         }
     }).error(function (data, status, headers, config) {
+        $scope.error_msg = $translate.instant('network_error');
         console.log("Could not fetch game metadata from server");
     });
 
@@ -170,12 +172,14 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
 })
 
-.controller('TeacherCtrl', function ($rootScope, $scope, API, Edit, $timeout, $ionicModal, $window, $ionicHistory, $translate, $ionicSlideBoxDelegate, $cordovaCamera, $q) {
+.controller('TeacherCtrl', function ($rootScope, $scope, API, Edit, $timeout, $ionicModal, $window, $ionicHistory, 
+	$translate, $ionicSlideBoxDelegate, $cordovaCamera, $q) {
     // List of all available games fetched from the server
     $scope.list = [];
 
     API.getAll().success(function (data, status, headers, config) {
         $scope.list = [];
+        $scope.error_msg = null;
         for (var i = 0; i < data.length; i++) {
             if (data[i].name != null) {
                 $scope.list.push(data[i]);
@@ -193,6 +197,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
             $scope.noData = false;
         }
     }).error(function (data, status, headers, config) {
+        $scope.error_msg = $translate.instant('network_error');
         $rootScope.notify(
             $translate.instant('oops_wrong'));
     });
@@ -439,7 +444,8 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         $ionicModal.fromTemplateUrl(templateUrl, {
             id: id,
             scope: $scope,
-            animation: 'slide-in-up'
+            animation: 'slide-in-up',
+            backdropClickToClose: false
         }).then(function (modal) {
             $scope.modal = modal;
             $scope.modal.show();
@@ -517,9 +523,11 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         $scope.qaTask = {};
 
         $scope.picFile = [];
+        $scope.picFilename = [];
+        $scope.imgPrvw = [];
 
         $scope.modal.remove();
-        createModal('templates/tasks/quest_type.html');
+        $scope.qamodal = createModal('templates/tasks/quest_type.html');
     };
 
     $scope.addGRtask = function () {
@@ -530,6 +538,30 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
         $scope.georP = null;
         $scope.gameMap.markers = [];
+    };
+
+    $scope.imgUpload = function(file, picIndex) {
+        var upload = API.uploadImage(file);
+        var reader = new FileReader();
+
+        // Previewing the image
+        reader.onload = function(event) {
+            $scope.imgPrvw[picIndex] = event.target.result;
+            $scope.$apply();
+        }
+        reader.readAsDataURL(file);
+
+        upload.then(function(res) {
+            console.log(res);
+            if (res.status == 200) {
+                $scope.picFilename[picIndex] = res.data.img_file;
+            } else {
+                console.log('Error! Pic POSTed, but no filename returned')
+            }
+            console.log($scope.picFilename);
+        }), function(res) {
+            console.log("Error uploading image.", res);
+        }
     };
 
     /* Picture is Loaded */
@@ -730,8 +762,6 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         $scope.list.splice($scope.list.indexOf(item), 1);
     };
 
-
-
     $scope.editItem = function (item) {
         $scope.navactivities = [];
 
@@ -786,9 +816,6 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
             });
     };
 })
-
-
-
 
 // Controller which controls new GAME creation
 .controller('NewGameCtrl', ['$rootScope', '$scope', '$state', '$http', '$location', '$cordovaGeolocation', '$ionicModal', 'API', 'Edit', 'Data', 'Task', '$window', '$ionicPopup', '$ionicHistory', 'leafletData', '$stateParams', '$cordovaCamera', function ($rootScope, $scope, $state, $http, $location, $cordovaGeolocation,
@@ -1014,7 +1041,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
     //Submit task when running on Windows
     $scope.submitGRTask = function (uploadedPhoto) {
-        $scope.imgURI = "data:image/jpeg;base64," + uploadedPhoto.base64;
+        //$scope.imgURI = "data:image/jpeg;base64," + uploadedPhoto.base64;
 
         Task.addPhoto($scope.imgURI);
         Task.addCoordinates($scope.map.markers[0].lat, $scope.map.markers[0].lng);
@@ -1164,7 +1191,6 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
 }])
 
-
 // controller for gameplay
 .controller('PlayCtrl', function ($scope, $stateParams, $ionicModal, $ionicPopup, $ionicLoading, $location, GameData, GameState, $timeout, $cordovaSocialSharing, $translate, API, PathData) {
     $scope.gameName = $stateParams.gameName;
@@ -1191,7 +1217,8 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         $ionicModal.fromTemplateUrl(templateUrl, {
             id: id,
             scope: $scope,
-            animation: 'slide-in-up'
+            animation: 'slide-in-up',
+            backdropClickToClose: false
         }).then(function (modal) {
             $scope.modal = modal;
             $scope.modal.show();
@@ -1220,14 +1247,23 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         }
     };
 
-    var handleNextWaypoint = function () {
+ 
+    $scope.showWaypointInfoModal = function() {
+        createModal('waypointinfo-modal.html', 'wpinfo');
+    };
+
+   var handleNextWaypoint = function () {
         GameState.todoWaypointIndex(); // Get pending waypoint
         if (GameState.allWaypointsCleared()) {
             handleNextActivity();
         } else {
             var actIndex = GameState.getCurrentActivity();
             var pointIndex = GameState.getCurrentWaypoint();
+            $scope.waypointImgURL = null;
             $scope.waypoint = GameData.getWaypoint(actIndex, pointIndex);
+            if ($scope.waypoint.pic != undefined) {
+                $scope.waypointImgURL = API.getImageURL($scope.waypoint.pic);
+            }
             $scope.$broadcast('waypointLoadedEvent', $scope.waypoint);
 
             $scope.score += 20;
@@ -1241,18 +1277,18 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         } else {
             $scope.task = GameData.getTask(GameState.getCurrentActivity(), GameState.getCurrentWaypoint(), GameState.getCurrentTask());
             if ($scope.task.type == 'GeoReference') {
-                performGeoReferencingTask($scope.task);
+                $scope.performGeoReferencingTask($scope.task);
             } else if ($scope.task.type == 'QA') {
                 performQATask($scope.task);
             } else {
                 // perform other kinds of tasks here
+                console.log("Handling other tasks, but of what kind?");
                 handleTask();
             }
         }
     };
 
-
-    var performGeoReferencingTask = function () {
+    $scope.performGeoReferencingTask = function () {
         $scope.showInfo = true;
         $scope.subHeaderInfo = "Mark location on map";
         $scope.geoRefPhoto = $scope.task.photo;
@@ -1263,10 +1299,24 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         //$scope.showInfo = true;
         createModal('qa-modal.html', 'qa');
 
+        $scope.nonTextAnswer = false; // True if images are used as answers
         $scope.timeLeft = 10;
         $scope.answerPicked = false;
-        $scope.rightAnswer = $scope.task.answers[0]; //Index of the right element in a schaffled array
-        $scope.choosedAnswer = "";
+
+        if (typeof $scope.task.answers == 'undefined') {
+            if (typeof $scope.task.imgans != 'undefined') {  
+	            $scope.nonTextAnswer = true;
+                $scope.task.answers = $scope.task.imgans;
+            } else { 
+                // Should not reach here.
+                // TODO: Disallow creation of QA game without images or text answers
+                //console.log($scope.task.imgans); 
+                console.log("Activity did not have any image/text answers for questions");
+            }
+        }
+
+        $scope.rightAnswer = $scope.task.answers[0]; // Correct answer is always at position 0
+        $scope.chosenAnswer = "";
         $scope.clicked = [false, false, false, false];
         $scope.ansChoosen = false;
         $scope.answer = null; // true - right; false - wrong;
@@ -1288,9 +1338,18 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
             $scope.task.answers[randomIndex] = temporaryValue;
         }
 
+        if ($scope.nonTextAnswer) {
+            $scope.imgAnsURL_0 = API.getImageURL($scope.task.answers[0]);
+            $scope.imgAnsURL_1 = API.getImageURL($scope.task.answers[1]);
+            $scope.imgAnsURL_2 = API.getImageURL($scope.task.answers[2]);
+            $scope.imgAnsURL_3 = API.getImageURL($scope.task.answers[3]);
+            $scope.imgRightAnswerURL = API.getImageURL($scope.rightAnswer);
+            console.log($scope.imgAnsURL_0, $scope.imgAnsURL_1, $scope.imgAnsURL_2, $scope.imgAnsURL_3);
+        }
+
         $scope.chooseAnswer = function (answer, index) {
             if (!$scope.ansChoosen) {
-                $scope.choosedAnswer = answer;
+                $scope.chosenAnswer = answer;
                 $scope.ansChoosen = true;
                 $scope.answerPicked = true;
                 $scope.clicked = [false, false, false, false];
@@ -1298,7 +1357,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
                 clearInterval(intervalId);
 
-                if ($scope.choosedAnswer == $scope.rightAnswer) {
+                if ($scope.chosenAnswer == $scope.rightAnswer) {
                     $scope.answerResult = "Correct Answer!";
                     $scope.answer = true;
                     $scope.icon = "ion-android-happy";
@@ -1310,7 +1369,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
                     $scope.score += 25;
                 } else {
                     $scope.answer = false;
-                    $scope.answerResult = "Sorry, next time will be better! ";
+                    $scope.answerResult = $translate.instant("wrong_ans_1");
                     $scope.rightAnswer = $scope.rightAnswer;
                     $scope.icon = "ion-sad-outline";
                     $scope.score -= 10;
@@ -1322,7 +1381,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         var intervalId = setInterval(function () {
             $scope.timeLeft--;
             if ($scope.timeLeft <= 0) {
-                $scope.answerResult = "Sorry, next time will be better! ";
+                $scope.answerResult = $translate.instant("wrong_ans_1");
                 $scope.rightAnswer = $scope.rightAnswer;
                 $scope.icon = "ion-sad-outline";
                 $scope.score -= 10;
@@ -1474,6 +1533,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         };
     };
 
+
     $scope.exitGame = function () {
         var delGame = {};
 
@@ -1510,6 +1570,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
     $scope.waypointLoaded = false;
     $scope.allowEdit = false;
+    $scope.showMarker = false;
 
     /* Initialize view of map */
     $scope.initialize = function () {
@@ -1574,6 +1635,7 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
         };
 
         $scope.geoLocButtonColor = "button-calm";
+        $scope.playerMarkerButtonColor = "button-calm";
         $scope.getRealTimePos = false;
         $scope.initialDistance = 500;
         $scope.currentDistance = 0;
@@ -1584,13 +1646,14 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
     $scope.updatePlayerPosMarker = function (position) {
         if (typeof $scope.map.markers.PlayerPos === "undefined") {
+            var playerMarker = './img/icons/marker-transparent.png';
             var marker = {
                 lat: position.lat,
                 lng: position.lng,
                 message: "You are here",
                 draggable: false,
                 icon: {
-                    iconUrl: './img/icons/Youarehere.png',
+                    iconUrl: playerMarker,
                     iconSize: [48, 48],
                     iconAnchor: [24, 48]
                 }
@@ -1876,6 +1939,30 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
             $scope.toggleGeoLocation(false);
         }
     });
+
+    // Show player position if button is pressed
+    $scope.showPositionMarker = function () {
+        if ($scope.showMarker == false) {
+            $scope.showMarker = true;
+            $scope.playerMarkerButtonColor = "button-balanced";
+
+            if (typeof $scope.map.markers.PlayerPos != "undefined") {
+                $scope.map.markers.PlayerPos.icon = {
+                    iconUrl: './img/icons/Youarehere.png',
+                    iconSize: [48, 48],
+                    iconAnchor: [24, 48]
+                };
+                // Hide marker again after 5 seconds
+                $timeout(function () {
+                    $scope.map.markers.PlayerPos.icon = {
+                        iconUrl: './img/icons/marker-transparent.png'
+                    };
+                    $scope.playerMarkerButtonColor = "button-calm";
+                    $scope.showMarker = false;
+                }, 5000);
+            }
+        }
+    }
 
     $scope.initialize();
 

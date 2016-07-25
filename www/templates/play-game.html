@@ -51,7 +51,8 @@
 
             <ion-content style="height: 100%; background-color:#64B5F6;">
                 <div class="answer_output">
-                    <i class="ion-android-pin"></i>
+                    <i class="ion-android-pin" ng-hide="waypoint.pic"></i>
+                    <img ng-src="{{waypointImgURL}}" alt="{{waypoint.pic}}" width="90%", height="50%" ng-show="waypoint.pic">
                     <h1>Your task: {{waypoint.name}}</h1>
                     <p> Description: {{waypoint.description}} </p>
                 </div>
@@ -219,13 +220,25 @@
                 </div>
                 <div class="qa_answers">
                     <div class="answer1" ng-click="chooseAnswer(task.answers[0], 0);timeLeft = -1" ng-class="{'clicked_answ': clicked[0]}">
-                        <h1>{{task.answers[0]}}</h1></div>
+                        <h1 ng-hide="nonTextAnswer">{{task.answers[0]}}</h1>
+                        <img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="{{task.answers[0]}}" ng-src="{{imgAnsURL_0}}">
+                        <!--<img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="task.answers[0].filename" src="data:image/jpeg;base64,{{task.answers[0].base64}}">-->
+                    </div>
                     <div class="answer2" ng-click="chooseAnswer(task.answers[1], 1);timeLeft = -1" ng-class="{'clicked_answ': clicked[1]}">
-                        <h1>{{task.answers[1]}}</h1></div>
+                        <h1 ng-hide="nonTextAnswer">{{task.answers[1]}}</h1>
+                        <img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="{{task.answers[1]}}" ng-src="{{imgAnsURL_1}}">
+                        <!--<img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="task.answers[1].filename" src="data:image/jpeg;base64,{{task.answers[1].base64}}">-->
+                    </div>
                     <div class="answer3" ng-click="chooseAnswer(task.answers[2], 2);timeLeft = -1" ng-class="{'clicked_answ': clicked[2]}">
-                        <h1>{{task.answers[2]}}</h1></div>
+                        <h1 ng-hide="nonTextAnswer">{{task.answers[2]}}</h1>
+                        <img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="{{task.answers[2]}}" ng-src="{{imgAnsURL_2}}">
+                        <!--<img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="task.answers[2].filename" src="data:image/jpeg;base64,{{task.answers[2].base64}}">-->
+                    </div>
                     <div class="answer4" ng-click="chooseAnswer(task.answers[3], 3);timeLeft = -1" ng-class="{'clicked_answ': clicked[3]}">
-                        <h1>{{task.answers[3]}}</h1></div>
+                        <h1 ng-hide="nonTextAnswer">{{task.answers[3]}}</h1>
+                        <img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="{{task.answers[3]}}" ng-src="{{imgAnsURL_3}}">
+                        <!--<img style='max-width:100%; max-height:100%' ng-show="nonTextAnswer" alt="task.answers[3].filename" src="data:image/jpeg;base64,{{task.answers[3].base64}}">-->
+                    </div>
                 </div>
             </ion-content>
         </ion-modal-view>
@@ -240,7 +253,11 @@
                 <div class="answer_output">
                     <i class="{{icon}}"></i>
                     <h1>{{answerResult}}</h1>
-                    <p ng-show="!answer">Right answer: {{rightAnswer}}</p>
+                    <p ng-show="!answer && !nonTextAnswer">{{'right_answer' | translate}}: {{rightAnswer}}</p>
+                    <div ng-show="!answer && nonTextAnswer" style='max-width:40%; max-height:40%; margin: 0 auto 0 auto;'>
+                        <p>Correct Answer</p>
+                        <img ng-show="!answer && nonTextAnswer" ng-src="{{imgRightAnswerURL}}" style='max-width:100%; max-height:100%'>
+                    </div>
                     <p ng-hide="answer">-10 points</p>
                     <p ng-show="answer">+25 points</p>
                 </div>
@@ -267,8 +284,16 @@
                 <canvas class="smiley" smiley></canvas>
                 <img class="bearing" src="./img/bearing.png" alt="ARROW" style="transform: rotate({{bearing}}deg)">
             </div>
-            <!-- <button class="button button-fab button-fab-bottom-right next button-calm icon ion-settings waves-effect waves-button waves-light" ui-sref="tab.teachmenu"></button> -->
-            <button class="button button-fab button-fab-bottom-right next {{geoLocButtonColor}} icon ion-android-locate waves-effect waves-button waves-light" ng-click="toggleGeoLocation(true)"></button>
+            <div id="button-container">
+                <!--Button to display modal with waypoint info (hide during georeferencing task) -->
+                <button class="button button-fab map-button next {{geoLocButtonColor}} icon ion-information waves-effect waves-button waves-light" ng-click="showWaypointInfoModal()" ng-hide="task.type == 'GeoReference'"></button>
+                <!--Button to display modal georeferencing question -->
+                <button class="button button-fab map-button next {{geoLocButtonColor}} icon ion-help waves-effect waves-button waves-light" ng-click="performGeoReferencingTask()" ng-show="task.type == 'GeoReference'"></button>
+                <!--Button to dislpay player's position on map as icon. Icon is hidden after 5 seconds -->
+                <button class="button button-fab map-button {{playerMarkerButtonColor}} icon ion-pin waves-button waves-light" ng-click="showPositionMarker()"></button>
+                <!--Button to center map with geolocation information. Map panning is disabled as long as this button is active -->
+                <button class="button button-fab map-button next {{geoLocButtonColor}} icon ion-android-locate waves-effect waves-button waves-light" ng-click="toggleGeoLocation(true)"></button>
+            </div>
         </div>
     </ion-content>
 
