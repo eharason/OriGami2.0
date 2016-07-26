@@ -1,0 +1,47 @@
+<ion-view align-title="center"  view-title="Matching">
+    <ion-nav-bar align-title="center" class="em_bar-positive">
+      <ion-nav-back-button></ion-nav-back-button>
+  </ion-nav-bar>
+    
+  <ion-content style = "background-color:#80DEEA;" data-tap-disabled="true">
+      <div id="em_map_canvas"></div>
+<button onclick="toggleMap()">Show Map</button>
+
+<div class="em_map_title">
+  <h1>Task
+  <div class="em_taskInfo">
+    <br>
+    Welcome to Trash Sorter! The goal of the game is to sort the trash by matching three pieces of the same trash together. Soon it will be time to test your skills on the map! Please choose your desired level on the left, which determines the size of the game board.</h1>
+  </div>
+</div>
+
+
+ <div id="em_game_wrapper">
+  <div class="em_ui" id="em_ui">
+    <h1>Trash Sorter</h1>
+    <p id="em_score">Score: <span class="em_score">0</span></p>
+    <p id="em_combo">Combo: <span class="em_combo">0</span></p>
+    <p id="em_bestCombo">Best Combo: <span class="em_bestCombo">0</span></p>
+  </div>
+
+  <main class="em_dropHelp">
+    <input id="em_toggle" type="checkbox">
+    <label for="toggle"><b>Help me!</b></label>
+    <div id="em_expand">
+      <section>
+    <p>Yellow bin – packaging</p>
+    <p>Blue bin – paper and cardboard</p>
+    <p>White bin – white or clear glass</p>
+    <p>Brown bin – brown glass</p>
+    <p>Green bin – green glass</p>
+    <p>“Bio” bin – leftover food and plant waste</p>
+
+      </section>
+    </div>
+  </main>
+
+  <div id="em_game">
+
+  <div game-tiles> </div> </div>
+  </ion-content>
+</ion-view>

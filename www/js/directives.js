@@ -93,4 +93,21 @@ angular.module('starter.directives', [])
             }
         };
         return directive;
-    });
+    })
+    .directive('gameTiles', function () {
+        return {
+            scope: false,
+            link: function(scope, element, attrs) {
+                var tiles = scope.tiles;
+                for (i in tiles) {
+                    tile = tiles[i];
+                    var str = '<div data-id="' + tile.id +  '"' +
+                             'class="' +tile.class + '"' + 'style="top:' + tile.top + 'px; left:' +
+                             tile.left + 'px; height:' + tile.height + 'px; width:' + tile.width + 'px;"></div>';
+                    element.append(str);
+                    console.log(str);
+                }
+            }
+        }
+    })
+;

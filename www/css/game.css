@@ -43,6 +43,216 @@
     font-weight: 900;
     line-height: 100%;
 }
+#em_expand {
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+section {
+  padding: 0 20px;
+}
+#em_toggle:checked ~ #em_expand {
+  height: 250px;
+}
+#em_toggle:checked ~ label::before {
+  content: "-";
+}
+
+.em_ui {
+    width: 602px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    overflow: hidden;
+}
+
+.em_ui h1 {
+    text-align: center;
+    font-size: 3em;
+    font-weight: lighter;
+    padding: 20px 0 10px;
+    margin: 0;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.em_ui p {
+    float: left;
+    background: rgba(0,0,0,0.20);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px 5px 0 0;
+    font-size: 1em;
+    line-height: 1;
+    width: 177px;
+    color: #fff;
+}
+
+.em_ui p#em_bestCombo {
+    float: right;
+    margin-right: 0;
+}
+
+.em_ui p span {
+    font-weight: bold;
+}
+
+.em_footer {
+    text-align: center;
+    font-size: 12px;
+    color: #000;
+}
+
+.em_footer a {
+    color: #000;
+}
+
+
+.em_message {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 3px 3px 1px rgba(0,0,0,0.25);
+    position: absolute;
+    top: 350px;
+    left: 50%;
+    height: 200px;
+    width: 500px;
+    padding: 30px 0;
+    margin: 0 0 0 -250px;
+    box-sizing: border-box;
+    text-align: center;
+    z-index: 99;
+}
+
+.em_message h2 {
+    margin: 0;
+    padding: 0 0 20px 0;
+    text-align: center;
+    font-size: 2em;
+    color: #ccc;
+}
+
+.em_message ul,
+.em_message li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.em_message button {
+    display: block;
+    font-size: 1em;
+    padding: 20px;
+    border: none;
+    background: #ccc;
+    border-radius: 10px;
+    box-shadow: 3px 3px 1px rgba(0,0,0,0.15);
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    cursor: pointer;
+}
+
+.em_message .twelve {
+    background-color: #d7191c;
+}
+
+.em_message .ten {
+    background-color: #fdae61;
+}
+
+.em_message .eight {
+    background-color: #ffffb2;
+}
+
+.em_message .six {
+    background-color: #a6d96a;
+}
+
+.em_message .four {
+    background-color: #1a9641;
+}
+
+#map_canvas {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+    width: 50%;
+    height: 77%;
+    bottom: 0;
+    margin: 10px;
+}
+
+.map_title h1 {
+    text-align: center;
+    font-size: 3em;
+    font-weight: lighter;
+    padding: 20px 0 10px;
+    margin: 20px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    position: absolute;
+    width: 50%;
+    right: 0;
+    background: gray;
+    opacity: 0.8;
+}
+
+#em_game_wrapper{
+    position: absolute;
+    left: 0;
+    width: 50%;
+    height: 100%;
+}
+
+#em_game {
+    height: 600px;
+    width: 600px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 0 auto;
+    position: relative;
+    border-radius: 10px;
+    left: 0;
+}
+
+#em_game .row {
+    position: absolute;
+    cursor: pointer;
+    border-radius: 50%;
+    -webkit-transform: scale(0.9);
+    background-image: url(../img/gradient.png);
+    background-size: cover;
+    overflow: hidden;
+}
+
+#em_game .row.glow {
+    z-index: 99;
+    box-shadow: inset 0 0 10px 10px rgba(255,255,255,1);    
+}
+
+#em_game .row.type-1 {
+    background-image: url(../img/lined_paper.jpg);
+}
+
+#em_game .row.type-2 {
+    background-image: url(../img/plastic_bottle.jpg);
+}
+
+#em_game .row.type-3 {
+    background-image: url(../img/Tetra_Pak.jpg);
+}
+
+#em_game .row.type-4 {
+    background-image: url(../img/apple.jpg);
+}
+
+#em_game .row.type-5 {
+    background-image: url(../img/tea_bag.jpg);
+}
+
+#em_game .row.type-6 {
+    background-image: url(../img/tin_foil.jpg);
+}
 
 .question {
     width: 90%;

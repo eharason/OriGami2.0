@@ -1966,4 +1966,68 @@ angular.module('starter.controllers', ['starter.services', 'starter.directives']
 
     $scope.initialize();
 
-}]);
+}])
+
+.controller('matchCtrl', ['$scope', '$rootScope', '$cordovaGeolocation', '$stateParams', '$ionicModal', '$ionicLoading', '$timeout', 'leafletData', '$translate', 'PathData', function ($scope, $rootScope, $cordovaGeolocation, $stateParams, $ionicModal, $ionicLoading, $timeout, leafletData, $translate, PathData) {
+    $scope.tiles = [];
+
+    $scope.init = function(size) {
+        // $scope.base = base;
+        // $scope.ui = ui;
+        $scope.originalSize = size;
+        $scope.size = $scope.originalSize * $scope.originalSize;
+        $scope.caseHeight = 500 / $scope.originalSize;
+        $scope.level = [];
+        $scope.typesOfTrash = 5;
+        $scope.fillEnd = true;
+        $scope.switchEnd = true;
+        $scope.playerCanControl = false;
+        $scope.populateLevel();
+        $scope.drawNewLevel();
+        $scope.score = 0;
+        $scope.combo = 0;
+        $scope.bestCombo = 0;
+
+        // setTimeout($.proxy($scope.checkLines, $scope), 1000);
+    };
+    $scope.populateLevel = function() {
+        var i;
+        for (i = 0; i < $scope.size; i++) {
+            //not use 0
+            $scope.level[i] = Math.round(Math.random() * $scope.typesOfTrash + 1);
+        }
+    };
+
+    $scope.drawNewLevel = function() {
+        var i;
+        var lines = -1;
+
+
+        for (i = 0; i < $scope.size; i++) {
+
+            if (i % $scope.originalSize === 0) {
+                lines++;
+            }
+
+            var foo = {
+                top: lines * $scope.caseHeight,
+                left: i % $scope.originalSize * $scope.caseHeight,
+                height: $scope.caseHeight,
+                width: $scope.caseHeight,
+                class: 'type-' + $scope.level[i] + ' row',
+                id: i
+            };
+            $scope.tiles.push(foo);
+            console.log(foo);
+        }
+
+        $scope.lines = lines + 1;
+        $scope.itemByLine = $scope.size / $scope.lines;
+
+        // $scope.bindDraggableEvent();
+        // $scope.releaseGameControl(true);
+    };
+    $scope.init(4);
+}])
+
+;

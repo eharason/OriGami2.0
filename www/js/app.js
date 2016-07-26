@@ -199,6 +199,15 @@ angular.module('starter', ['ionic', 'naif.base64', 'ngMdIcons', 'pascalprecht.tr
                     controller: 'NewGameCtrl'
                 }
             }
+        })
+        .state('tab.match', {
+            url: "/match",
+            views: {
+                'tab-home': {
+                    templateUrl: "templates/tasks/matching.html",
+                    controller: 'matchCtrl'
+                }
+            }
         });
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/tab/home');
