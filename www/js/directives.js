@@ -1,28 +1,28 @@
 angular.module('starter.directives', [])
-    .directive('testAnimate', function () {
-        return {
-            link: function (scope, iElement, iAttrs) {
-                scope.$watch(iAttrs.testAnimate, function (newValue, oldValue) {
-                    if (newValue == -1) {
-                        iElement.stop();
-                    } else {
-                        iElement.animate({
-                            width: 100 + '%'
-                        }, 10000);
-                    }
-                });
-            }
-        };
-    })
-    .directive('smiley', function ($parse) {
-        var directive = {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                scope.canvas = element[0];
-                scope.canvasContext = element[0].getContext('2d');
+.directive('testAnimate', function () {
+    return {
+        link: function (scope, iElement, iAttrs) {
+            scope.$watch(iAttrs.testAnimate, function (newValue, oldValue) {
+                if (newValue == -1) {
+                    iElement.stop();
+                } else {
+                    iElement.animate({
+                        width: 100 + '%'
+                    }, 10000);
+                }
+            });
+        }
+    };
+})
+.directive('smiley', function ($parse) {
+    var directive = {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            scope.canvas = element[0];
+            scope.canvasContext = element[0].getContext('2d');
 
-                scope.drawSmiley = function (canvas, context, distance, fill) {
-                    var GOLDEN_RATIO = 1.618;
+            scope.drawSmiley = function (canvas, context, distance, fill) {
+                var GOLDEN_RATIO = 1.618;
                     var padding = 2; //padding between edge of face and canvas
                     var center_x = canvas.width / 2;
                     var center_y = canvas.height / 2;
@@ -65,21 +65,21 @@ angular.module('starter.directives', [])
                     };
 
                     /* Not perfect. Fill should instead be based on whether distance to
-                     destination is decreasing, rather than using absolute distance */
+                    destination is decreasing, rather than using absolute distance */
                     switch (true) {
-                    case distance <= 10:
+                        case distance <= 10:
                         fill = 'green';
                         break;
-                    case distance <= 50:
+                        case distance <= 50:
                         fill = 'yellowgreen';
                         break;
-                    case distance <= 100:
+                        case distance <= 100:
                         fill = 'gold';
                         break;
-                    case distance <= 500:
+                        case distance <= 500:
                         fill = 'yellow';
                         break;
-                    default:
+                        default:
                         fill = 'red';
                     }
 
@@ -94,20 +94,44 @@ angular.module('starter.directives', [])
         };
         return directive;
     })
-    .directive('gameTiles', function () {
-        return {
-            scope: false,
-            link: function(scope, element, attrs) {
-                var tiles = scope.tiles;
-                for (i in tiles) {
-                    tile = tiles[i];
-                    var str = '<div data-id="' + tile.id +  '"' +
-                             'class="' +tile.class + '"' + 'style="top:' + tile.top + 'px; left:' +
-                             tile.left + 'px; height:' + tile.height + 'px; width:' + tile.width + 'px;"></div>';
-                    element.append(str);
-                    console.log(str);
-                }
-            }
+.directive('gameTiles', ['$compile', function($compile) {
+    return {
+        scope: false,
+        replace: true,
+        link: function(scope, el, attrs) {
+            var tiles = scope.tiles;  
+
+            scope.onHammer = function onHammer (event) {
+            console.log("test")
+          };        
+
+            for (i in tiles) {
+                tile = tiles[i];
+                position = scope.position(tile.id+1)
+
+                tileDiv = document.createElement('div');
+                position = scope.position(tile.id+1);
+                
+                tileDiv.className = tile.class
+                tileDiv.style.top = tile.top + "px"
+                tileDiv.style.height = tile.height + "px"
+                tileDiv.style.left = tile.left + "px"
+                tileDiv.style.width = tile.width + "px"
+
+                tileDiv.setAttribute('data-id',tile.id);     
+                tileDiv.setAttribute('data-position-x',position[0]);
+                tileDiv.setAttribute('data-position-y',position[1]);
+                tileDiv.setAttribute('hm-tap',"scope.onHammer");
+
+                tileDiv.onclick = function(){
+                    this.style.border = "3px solid red";
+                };
+
+                el.append(tileDiv);
+
+            }; 
+
+            $compile(el.contents())(scope);
         }
-    })
-;
+    }
+}])
