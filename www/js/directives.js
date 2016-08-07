@@ -99,33 +99,35 @@ angular.module('starter.directives', [])
         scope: false,
         replace: true,
         link: function(scope, el, attrs) {
-            var tiles = scope.tiles;  
-
-            scope.onHammer = function onHammer (event) {
-            console.log("test")
-          };        
+            var tiles = scope.tiles;       
 
             for (i in tiles) {
                 tile = tiles[i];
                 position = scope.position(tile.id+1)
 
-                tileDiv = document.createElement('div');
-                position = scope.position(tile.id+1);
-                
-                tileDiv.className = tile.class
-                tileDiv.style.top = tile.top + "px"
-                tileDiv.style.height = tile.height + "px"
-                tileDiv.style.left = tile.left + "px"
-                tileDiv.style.width = tile.width + "px"
+                tileDiv = angular.element('<div></div>')
+                    .attr('class', tile.class)
+                    .css('top', tile.top + "px")
+                    .css('height', tile.height + "px")
+                    .css('left', tile.left + "px")
+                    .css('width', tile.width + "px")
+                    .attr('data-id',tile.id)
+                    .attr('data-position-x',position[0])
+                    .attr('data-position-y',position[1])
+                    .attr('hm-pan',"onHammer")
+                    .attr('hm-press',"onHammer")
+                    .attr('hm-tap',"onHammer");
+                    
+                //     .attr('hm-tap', attrs['gameTiles']);
 
-                tileDiv.setAttribute('data-id',tile.id);     
-                tileDiv.setAttribute('data-position-x',position[0]);
-                tileDiv.setAttribute('data-position-y',position[1]);
-                tileDiv.setAttribute('hm-tap',"scope.onHammer");
+                // tileDiv.attributes.$set('hm-tap', "onHammer");
 
-                tileDiv.onclick = function(){
-                    this.style.border = "3px solid red";
-                };
+                //                 var mc = new Hammer(tileDiv);
+
+                // mc.on("dragleft dragright dragup dragdown", function(event) {
+                //     // event.gesture.preventDefault();
+                //     // console.log(ev.type +" gesture detected.");
+                // });
 
                 el.append(tileDiv);
 
