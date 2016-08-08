@@ -103,7 +103,8 @@ angular.module('starter.directives', [])
 
             for (i in tiles) {
                 tile = tiles[i];
-                position = scope.position(tile.id+1)
+                position = scope.position(tile.id+1);
+                onHammer = scope.onHammer;
 
                 tileDiv = angular.element('<div></div>')
                     .attr('class', tile.class)
@@ -118,7 +119,7 @@ angular.module('starter.directives', [])
                     .attr('hm-press',"onHammer")
                     .attr('hm-tap',"onHammer");
                     
-                //     .attr('hm-tap', attrs['gameTiles']);
+                    // .attr('hm-tap', attrs['gameTiles']);
 
                 // tileDiv.attributes.$set('hm-tap', "onHammer");
 
@@ -130,10 +131,10 @@ angular.module('starter.directives', [])
                 // });
 
                 el.append(tileDiv);
-
             }; 
 
             $compile(el.contents())(scope);
+            ionic.onGesture("release dragleft dragright swipeleft swiperight", onHammer, el[0], { drag_lock_to_axis: true });
         }
     }
 }])
