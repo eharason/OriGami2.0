@@ -2009,7 +2009,8 @@
         };
 
         $scope.onHammer = function onHammer (event) {
-            console.log("test")
+            event.gesture.preventDefault();
+            console.log(event.type +" gesture detected.");
           };
 
         $scope.drawNewLevel = function() {

@@ -114,21 +114,7 @@ angular.module('starter.directives', [])
                     .css('width', tile.width + "px")
                     .attr('data-id',tile.id)
                     .attr('data-position-x',position[0])
-                    .attr('data-position-y',position[1])
-                    .attr('hm-pan',"onHammer")
-                    .attr('hm-press',"onHammer")
-                    .attr('hm-tap',"onHammer");
-                    
-                    // .attr('hm-tap', attrs['gameTiles']);
-
-                // tileDiv.attributes.$set('hm-tap', "onHammer");
-
-                //                 var mc = new Hammer(tileDiv);
-
-                // mc.on("dragleft dragright dragup dragdown", function(event) {
-                //     // event.gesture.preventDefault();
-                //     // console.log(ev.type +" gesture detected.");
-                // });
+                    .attr('data-position-y',position[1]);
 
                 el.append(tileDiv);
             }; 
