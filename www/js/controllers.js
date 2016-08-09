@@ -1559,14 +1559,7 @@
         GameData.loadGame($scope.gameName).then(initGame, gameLoadFailure);
     })
 
-
-
-
-    /* - Controller for map in student mode
-     * - Only shows waypoint and emits signal when waypoint is reached
-     * - Is not concerned with GameState or the game progression logic
-     */
-     .controller('StudentMapCtrl', ['$scope', '$rootScope', '$cordovaGeolocation', '$stateParams', '$ionicModal', '$ionicLoading', '$timeout', 'leafletData', '$translate', 'PathData', function ($scope, $rootScope, $cordovaGeolocation, $stateParams, $ionicModal, $ionicLoading, $timeout, leafletData, $translate, PathData) {
+    .controller('StudentMapCtrl', ['$scope', '$rootScope', '$cordovaGeolocation', '$stateParams', '$ionicModal', '$ionicLoading', '$timeout', 'leafletData', '$translate', 'PathData', function ($scope, $rootScope, $cordovaGeolocation, $stateParams, $ionicModal, $ionicLoading, $timeout, leafletData, $translate, PathData) {
 
         $scope.waypointLoaded = false;
         $scope.allowEdit = false;
@@ -1967,7 +1960,6 @@
         $scope.initialize();
 
     }])
-
     .controller('matchCtrl', ['$scope', '$rootScope', '$cordovaGeolocation', '$stateParams', '$ionicModal', '$ionicLoading', '$timeout', 'leafletData', '$translate', 'PathData', '$compile', function ($scope, $rootScope, $cordovaGeolocation, $stateParams, $ionicModal, $ionicLoading, $timeout, leafletData, $translate, PathData,$compile) {
         $scope.tiles = [];
 
@@ -2008,15 +2000,9 @@
             return [x, y];
         };
 
-        $scope.onHammer = function onHammer (event, el) {
+        $scope.onHammer = function onHammer (event) {
             event.gesture.preventDefault();
             // console.log(event.type +" gesture detected.");
-
-            // if (event.target === el[0].children[0]) {
-            //   var x = event.center.x - 250,
-            //       y = event.center.y - 250;
-            // }
-
           };
 
         $scope.drawNewLevel = function() {
@@ -2030,7 +2016,7 @@
                     lines++;
                 }
 
-                var foo = {
+                var myTiles = {
                     top: lines * $scope.caseHeight,
                     left: i % $scope.originalSize * $scope.caseHeight,
                     height: $scope.caseHeight,
@@ -2038,19 +2024,13 @@
                     class: 'type-' + $scope.level[i] + ' row',
                     id: i
                 };
-                $scope.tiles[i]=foo;
-                // console.log(foo['class']);
-
-                // if (foo['class'] === 'type-1 row') {
-                //     console.log(foo['class']);
-                // }
+                $scope.tiles[i]=myTiles;
             }
 
             $scope.lines = lines + 1;
             $scope.itemByLine = $scope.size / $scope.lines;
 
         };
-
 
             $scope.init(4);
         }]);

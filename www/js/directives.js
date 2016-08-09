@@ -137,13 +137,34 @@ angular.module('starter.directives', [])
 
                         break;
                         case 'left':
-                        var nextTile = event.data.$parent.tiles[curId-1].tileDiv[0];
+                            if (curId !== 0) {
+                                console.log(curId);
+                                var nextTile = event.data.$parent.tiles[curId-1].tileDiv[0];
+                                var nextTileId = Number(nextTile.attributes['data-id'].value);
+
+                                var nextTileTop = nextTile.style.top;
+                                var nextTileLeft = nextTile.style.left;
+                            }
+
+                        //check 1st element, dodrag is set execute, otherwise not
+
+                        break;
+                        case 'up': 
+                        var nextTile = event.data.$parent.tiles[curId%+1].tileDiv[0];
+                        var nextTileId = Number(nextTile.attributes['data-id'].value);
+
+                        var nextTileTop = nextTile.style.top;
+                        console.log(nextTileTop);
+                        var nextTileLeft = nextTile.style.left;
+
+                        break;
+                        case 'down': 
+                        var nextTile = event.data.$parent.tiles[curId%-1].tileDiv[0];
                         var nextTileId = Number(nextTile.attributes['data-id'].value);
 
                         var nextTileTop = nextTile.style.top;
                         var nextTileLeft = nextTile.style.left;
 
-                        //check 1st element, dodrag is set execute, otherwise not
                         break;
                     }
                     this.attributes['data-id'].value = nextTileId;
@@ -157,7 +178,6 @@ angular.module('starter.directives', [])
 
                     event.data.$parent.tiles[curId+1].tileDiv[0] = nextTile;
 
-
                     scope.dragdirection = null;
                     console.log("drag event FINISHED!")
                 });
@@ -165,13 +185,17 @@ angular.module('starter.directives', [])
                 tileDiv.on('dragright', null, scope, function(event) {
                     scope.dragdirection = 'right';
                 });
-
                 tileDiv.on('dragleft', null, scope, function(event) {
                     scope.dragdirection = 'left';
                 });
+                tileDiv.on('dragup', null, scope, function(event) {
+                    scope.dragdirection = 'up';
+                });
+                tileDiv.on('dragdown', null, scope, function(event) {
+                    scope.dragdirection = 'down';
+                });
 
             };
-            // console.log(scope.tiles)             
         }
     }
 })
