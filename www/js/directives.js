@@ -94,17 +94,18 @@ angular.module('starter.directives', [])
         };
         return directive;
     })
-.directive('gameTiles', ['$compile', function($compile) {
+.directive('gameTiles', function() {
     return {
         scope: false,
         replace: true,
         link: function(scope, el, attrs) {
-            var tiles = scope.tiles;       
+            var tiles = scope.tiles; 
 
             for (i in tiles) {
                 tile = tiles[i];
                 position = scope.position(tile.id+1);
                 onHammer = scope.onHammer;
+                scope.dragdirection = null;
 
                 tileDiv = angular.element('<div></div>')
                     .attr('class', tile.class)
@@ -116,11 +117,61 @@ angular.module('starter.directives', [])
                     .attr('data-position-x',position[0])
                     .attr('data-position-y',position[1]);
 
-                el.append(tileDiv);
-            }; 
+                scope.tiles[i].tileDiv = tileDiv;
 
-            $compile(el.contents())(scope);
-            ionic.onGesture("release dragleft dragright swipeleft swiperight", onHammer, el[0], { drag_lock_to_axis: true });
+                el.append(tileDiv);
+                ionic.onGesture("release dragleft dragright swipeleft swiperight dragup dragdown", onHammer, tileDiv[0], { drag_lock_to_axis: false });
+                
+                tileDiv.on('dragend', null, scope, function(event) {
+                    var curId = Number(this.attributes['data-id'].value);
+                    var curTileTop = this.style.top;
+                    var curTileLeft = this.style.left;
+
+                    switch (scope.dragdirection) {
+                        case 'right': 
+                        var nextTile = event.data.$parent.tiles[curId+1].tileDiv[0];
+                        var nextTileId = Number(nextTile.attributes['data-id'].value);
+
+                        var nextTileTop = nextTile.style.top;
+                        var nextTileLeft = nextTile.style.left;
+
+                        break;
+                        case 'left':
+                        var nextTile = event.data.$parent.tiles[curId-1].tileDiv[0];
+                        var nextTileId = Number(nextTile.attributes['data-id'].value);
+
+                        var nextTileTop = nextTile.style.top;
+                        var nextTileLeft = nextTile.style.left;
+
+                        //check 1st element, dodrag is set execute, otherwise not
+                        break;
+                    }
+                    this.attributes['data-id'].value = nextTileId;
+                    nextTileId = curId;
+
+                    this.style.top = nextTileTop; 
+                    nextTile.style.top = curTileTop;
+
+                    this.style.left = nextTileLeft;
+                    nextTile.style.left = curTileLeft;
+
+                    event.data.$parent.tiles[curId+1].tileDiv[0] = nextTile;
+
+
+                    scope.dragdirection = null;
+                    console.log("drag event FINISHED!")
+                });
+
+                tileDiv.on('dragright', null, scope, function(event) {
+                    scope.dragdirection = 'right';
+                });
+
+                tileDiv.on('dragleft', null, scope, function(event) {
+                    scope.dragdirection = 'left';
+                });
+
+            };
+            // console.log(scope.tiles)             
         }
     }
-}])
+})

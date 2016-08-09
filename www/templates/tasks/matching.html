@@ -4,6 +4,7 @@
   </ion-nav-bar>
     
   <ion-content style = "background-color:#80DEEA;" data-tap-disabled="true" id="eventPlaceholder" has-bouncing="false">{{lastEventCalled}} 
+  <ion-list show-delete="false" can-swipe="true" swipe-direction="both">
 <!-- 
  <div class="em_taskInfo">
     Welcome to Trash Sorter! The goal of the game is to sort the trash by matching three pieces of the same trash together. Soon it will be time to test your skills on the map! Please choose your desired level on the left, which determines the size of the game board.
@@ -38,5 +39,6 @@
   <div game-tiles></div> 
 
   </div>
+  </ion-list>
   </ion-content>
 </ion-view>

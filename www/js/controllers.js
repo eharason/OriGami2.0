@@ -2008,9 +2008,15 @@
             return [x, y];
         };
 
-        $scope.onHammer = function onHammer (event) {
+        $scope.onHammer = function onHammer (event, el) {
             event.gesture.preventDefault();
-            console.log(event.type +" gesture detected.");
+            // console.log(event.type +" gesture detected.");
+
+            // if (event.target === el[0].children[0]) {
+            //   var x = event.center.x - 250,
+            //       y = event.center.y - 250;
+            // }
+
           };
 
         $scope.drawNewLevel = function() {
@@ -2032,7 +2038,7 @@
                     class: 'type-' + $scope.level[i] + ' row',
                     id: i
                 };
-                $scope.tiles.push(foo);
+                $scope.tiles[i]=foo;
                 // console.log(foo['class']);
 
                 // if (foo['class'] === 'type-1 row') {
