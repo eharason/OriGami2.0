@@ -137,20 +137,16 @@ angular.module('starter.directives', [])
 
                         break;
                         case 'left':
-                            if (curId !== 0) {
-                                console.log(curId);
-                                var nextTile = event.data.$parent.tiles[curId-1].tileDiv[0];
-                                var nextTileId = Number(nextTile.attributes['data-id'].value);
+                        var nextTile = event.data.$parent.tiles[curId-1].tileDiv[0];
+                        var nextTileId = Number(nextTile.attributes['data-id'].value);
 
-                                var nextTileTop = nextTile.style.top;
-                                var nextTileLeft = nextTile.style.left;
-                            }
-
+                        var nextTileTop = nextTile.style.top;
+                        var nextTileLeft = nextTile.style.left;
                         //check 1st element, dodrag is set execute, otherwise not
 
                         break;
                         case 'up': 
-                        var nextTile = event.data.$parent.tiles[curId%+1].tileDiv[0];
+                        var nextTile = event.data.$parent.tiles[curId%1].tileDiv[0];
                         var nextTileId = Number(nextTile.attributes['data-id'].value);
 
                         var nextTileTop = nextTile.style.top;
@@ -159,7 +155,7 @@ angular.module('starter.directives', [])
 
                         break;
                         case 'down': 
-                        var nextTile = event.data.$parent.tiles[curId%-1].tileDiv[0];
+                        var nextTile = event.data.$parent.tiles[curId%1].tileDiv[0];
                         var nextTileId = Number(nextTile.attributes['data-id'].value);
 
                         var nextTileTop = nextTile.style.top;

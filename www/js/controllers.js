@@ -2033,4 +2033,9 @@
         };
 
             $scope.init(4);
-        }]);
+        }])
+
+.controller('routePlanCtrl', ['$scope', '$rootScope', '$cordovaGeolocation', '$stateParams', '$ionicModal', '$ionicLoading', '$timeout', 'leafletData', '$translate', 'PathData', '$compile', function ($scope, $rootScope, $cordovaGeolocation, $stateParams, $ionicModal, $ionicLoading, $timeout, leafletData, $translate, PathData,$compile) {
+     console.log("test");
+        }])
+    ;

@@ -208,6 +208,15 @@ angular.module('starter', ['ionic', 'naif.base64', 'ngMdIcons', 'pascalprecht.tr
                     controller: 'matchCtrl'
                 }
             }
+        })
+        .state('tab.routeplan', {
+            url: "/routeplan",
+            views: {
+                'tab-home': {
+                    templateUrl: "templates/map/route_plan.html",
+                    controller: 'routePlanCtrl'
+                }
+            }
         });
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/tab/home');
