@@ -108,14 +108,14 @@ angular.module('starter.directives', [])
                 scope.dragdirection = null;
 
                 tileDiv = angular.element('<div></div>')
-                    .attr('class', tile.class)
-                    .css('top', tile.top + "px")
-                    .css('height', tile.height + "px")
-                    .css('left', tile.left + "px")
-                    .css('width', tile.width + "px")
-                    .attr('data-id',tile.id)
-                    .attr('data-position-x',position[0])
-                    .attr('data-position-y',position[1]);
+                .attr('class', tile.class)
+                .css('top', tile.top + "px")
+                .css('height', tile.height + "px")
+                .css('left', tile.left + "px")
+                .css('width', tile.width + "px")
+                .attr('data-id',tile.id)
+                .attr('data-position-x',position[0])
+                .attr('data-position-y',position[1]);
 
                 scope.tiles[i].tileDiv = tileDiv;
 
@@ -126,72 +126,182 @@ angular.module('starter.directives', [])
                     var curId = Number(this.attributes['data-id'].value);
                     var curTileTop = this.style.top;
                     var curTileLeft = this.style.left;
+                    var curTilePosition = scope.position(curId+1);
+
+                    var nextTile = null;
 
                     switch (scope.dragdirection) {
                         case 'right': 
-                        var nextTile = event.data.$parent.tiles[curId+1].tileDiv[0];
-                        var nextTileId = Number(nextTile.attributes['data-id'].value);
+                        if (event.data.$parent.tiles[curId+1]!=undefined){
+                            nextTilePosition = scope.position(curId+1+1);
+                            if(curTilePosition[1] == nextTilePosition[1]){
+                                var nextTile = event.data.$parent.tiles[curId+1].tileDiv[0];
+                                var nextTileId = Number(nextTile.attributes['data-id'].value);
+                                var nextTileTop = nextTile.style.top;
+                                var nextTileLeft = nextTile.style.left;
+                            }
 
-                        var nextTileTop = nextTile.style.top;
-                        var nextTileLeft = nextTile.style.left;
+                        } 
 
                         break;
                         case 'left':
-                        var nextTile = event.data.$parent.tiles[curId-1].tileDiv[0];
-                        var nextTileId = Number(nextTile.attributes['data-id'].value);
+                        if (event.data.$parent.tiles[curId-1]!=undefined){
+                            nextTilePosition = scope.position(curId-1+1);
+                            if(curTilePosition[1] == nextTilePosition[1]){
+                                var nextTile = event.data.$parent.tiles[curId-1].tileDiv[0];
+                                var nextTileId = Number(nextTile.attributes['data-id'].value);
+                                var nextTileTop = nextTile.style.top;
+                                var nextTileLeft = nextTile.style.left;
+                            }
 
-                        var nextTileTop = nextTile.style.top;
-                        var nextTileLeft = nextTile.style.left;
+                        } 
+
                         //check 1st element, dodrag is set execute, otherwise not
 
                         break;
                         case 'up': 
-                        var nextTile = event.data.$parent.tiles[curId%1].tileDiv[0];
-                        var nextTileId = Number(nextTile.attributes['data-id'].value);
-
-                        var nextTileTop = nextTile.style.top;
-                        console.log(nextTileTop);
-                        var nextTileLeft = nextTile.style.left;
+                        if (event.data.$parent.tiles[curId-4]!=undefined){
+                            var nextTile = event.data.$parent.tiles[curId-4].tileDiv[0];
+                            var nextTileId = Number(nextTile.attributes['data-id'].value);
+                            var nextTileTop = nextTile.style.top;
+                            var nextTileLeft = nextTile.style.left;
+                        } 
 
                         break;
                         case 'down': 
-                        var nextTile = event.data.$parent.tiles[curId%1].tileDiv[0];
-                        var nextTileId = Number(nextTile.attributes['data-id'].value);
-
-                        var nextTileTop = nextTile.style.top;
-                        var nextTileLeft = nextTile.style.left;
+                        if (event.data.$parent.tiles[curId+4]!=undefined){
+                            var nextTile = event.data.$parent.tiles[curId+4].tileDiv[0];
+                            var nextTileId = Number(nextTile.attributes['data-id'].value);
+                            var nextTileTop = nextTile.style.top;
+                            var nextTileLeft = nextTile.style.left;
+                        } 
 
                         break;
                     }
-                    this.attributes['data-id'].value = nextTileId;
-                    nextTileId = curId;
 
-                    this.style.top = nextTileTop; 
-                    nextTile.style.top = curTileTop;
+                    // Switch current tile with next Tile
+                    if (nextTile != null){
+                        this.attributes['data-id'].value = nextTileId;
+                        this.style.top = nextTileTop; 
+                        this.style.left = nextTileLeft;
+                        event.data.$parent.tiles[nextTileId].tileDiv[0] = this;
 
-                    this.style.left = nextTileLeft;
-                    nextTile.style.left = curTileLeft;
 
-                    event.data.$parent.tiles[curId+1].tileDiv[0] = nextTile;
+                        nextTile.attributes['data-id'].value = curId;
+                        nextTile.style.top = curTileTop; 
+                        nextTile.style.left = curTileLeft;
+                        event.data.$parent.tiles[curId].tileDiv[0] = nextTile;
 
-                    scope.dragdirection = null;
-                    console.log("drag event FINISHED!")
-                });
+                        scope.dragdirection = null;
 
-                tileDiv.on('dragright', null, scope, function(event) {
-                    scope.dragdirection = 'right';
-                });
-                tileDiv.on('dragleft', null, scope, function(event) {
-                    scope.dragdirection = 'left';
-                });
-                tileDiv.on('dragup', null, scope, function(event) {
-                    scope.dragdirection = 'up';
-                });
-                tileDiv.on('dragdown', null, scope, function(event) {
-                    scope.dragdirection = 'down';
-                });
+                        // Update Level
 
-            };
-        }
-    }
+                        curId = nextTileId;
+                        curTilePosition = scope.position(curId+1);
+
+                        tileClass = this.attributes['class'].value;
+                        var tilesToBeRemoved = ["" + curId];
+
+                        // Search Horizontal
+                        // Search Left
+
+                        NeighbourTileID = curId -1;
+                        NeighbourTilePosition = scope.position(NeighbourTileID+1);
+
+                        while(NeighbourTilePosition[1] == curTilePosition[1]){
+                            NeighbourTile = event.data.$parent.tiles[NeighbourTileID].tileDiv[0];
+                            if(NeighbourTile.attributes['class'].value == tileClass){
+                                tilesToBeRemoved.push("" + NeighbourTileID);
+                                NeighbourTileID = NeighbourTileID -1;
+                                NeighbourTilePosition = scope.position(NeighbourTileID+1);
+                            }
+                            else{
+                                break;
+                            }
+                        }
+
+                        // Search Right
+                        NeighbourTileID = curId +1;
+                        NeighbourTilePosition = scope.position(NeighbourTileID+1);
+
+                        while(NeighbourTilePosition[1] == curTilePosition[1]){
+                            NeighbourTile = event.data.$parent.tiles[NeighbourTileID].tileDiv[0];
+                            if(NeighbourTile.attributes['class'].value == tileClass){
+                                tilesToBeRemoved.push("" + NeighbourTileID);
+                                NeighbourTileID = NeighbourTileID +1;
+                                NeighbourTilePosition = scope.position(NeighbourTileID+1);
+                            }
+                            else{
+                                break;
+                            }
+                        }
+
+                        // Check if already more than 2 tiles with same type
+                        if(tilesToBeRemoved.length < 3){
+
+                            // Search Vertical
+
+                            var tilesToBeRemoved = ["" + curId];
+
+                            // Search Up
+                            NeighbourTileID = curId -4;
+                            NeighbourTilePosition = scope.position(NeighbourTileID+1);
+
+                            while(NeighbourTileID >= 0 && NeighbourTilePosition[0] == curTilePosition[0]){
+                                NeighbourTile = event.data.$parent.tiles[NeighbourTileID].tileDiv[0];
+                                if(NeighbourTile.attributes['class'].value == tileClass){
+                                    tilesToBeRemoved.push("" + NeighbourTileID);
+                                    NeighbourTileID = NeighbourTileID -4;
+                                    NeighbourTilePosition = scope.position(NeighbourTileID+1);
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                            // Search Down
+                            NeighbourTileID = curId +4;
+                            NeighbourTilePosition = scope.position(NeighbourTileID+1);
+
+                            while(NeighbourTileID < 16 && NeighbourTilePosition[0] == curTilePosition[0]){
+                                NeighbourTile = event.data.$parent.tiles[NeighbourTileID].tileDiv[0];
+                                if(NeighbourTile.attributes['class'].value == tileClass){
+                                    tilesToBeRemoved.push("" + NeighbourTileID);
+                                    NeighbourTileID = NeighbourTileID +4;
+                                    NeighbourTilePosition = scope.position(NeighbourTileID+1);
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                        }
+
+                    // UPDATE Game
+                    // Check if already more than 2 tiles with same type
+                    if(tilesToBeRemoved.length >= 3){
+                        for (i = 0; i < tilesToBeRemoved.length; i++) {
+                            newClass = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
+                            newClass="type-" + newClass + " row disable-user-behavior";
+                            event.data.$parent.tiles[Number(tilesToBeRemoved[i])].tileDiv[0].attributes['class'].value = newClass;
+                        }
+                    }
+                }
+
+            });
+
+tileDiv.on('dragright', null, scope, function(event) {
+    scope.dragdirection = 'right';
+});
+tileDiv.on('dragleft', null, scope, function(event) {
+    scope.dragdirection = 'left';
+});
+tileDiv.on('dragup', null, scope, function(event) {
+    scope.dragdirection = 'up';
+});
+tileDiv.on('dragdown', null, scope, function(event) {
+    scope.dragdirection = 'down';
+});
+
+};
+}
+}
 })
